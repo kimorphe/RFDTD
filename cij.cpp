@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 
 class STIFF{
@@ -21,7 +22,6 @@ STIFF::STIFF(){
 	}
 	}
 };
-
 void STIFF::load(int type){
 	if(type==0){
 		double cL=6.0;	//[km/s]=[micro sec/mm]
@@ -76,8 +76,8 @@ void Field::mem_alloc(int ndiv[3]){
 
 
 	for(int i=0;i<3;i++){
-		ngv[i]=ndiv[i]+1;
-		ngs[i]=ndiv[i]+2;
+		ngv[i]=ndiv[i]+1;	// number of grids for stress components 
+		ngs[i]=ndiv[i]+2;	// number of grids for velocity components
 	}
 
 	S1=Field::mem_alloc3d(ngs);
@@ -98,7 +98,6 @@ double ***Field::mem_alloc3d(int ndiv[3]){
 	Ndiv[1]=ndiv[1];
 	Ndiv[2]=ndiv[2];
 	int ndat=Ndiv[0]*Ndiv[1]*Ndiv[2];
-	//int Ndat=(Ndiv[0]+1)*(Ndiv[1]+1)*(Ndiv[2]+1);
 
 	double *p1=(double *)malloc(sizeof(double)*ndat);
 	double **p2=(double **)malloc(sizeof(double*)*Ndiv[0]*Ndiv[1]);
@@ -234,6 +233,38 @@ void Field::s2v(){
 	}
 };
 
+class DOMAIN{
+	public:
+		double Xa[3],Xb[3];
+		int Ndiv[3];
+		double dh,dx[3];
+		STIFF cij;
+		Field fld;
+		void setup(double Xa[3],double Xb[3],double dh);
+	private:
+};
+
+void DOMAIN::setup(
+	double xa[3],
+	double xb[3],
+	double h
+){
+	dh=h;
+	for(int i=0;i<3;i++){
+		Xa[i]=xa[i];
+		Xb[i]=xb[i];
+		Ndiv[i]=ceil((Xb[i]-Xa[i])/dh);
+		dx[i]=dh;
+		Xb[i]=Xa[i]+dh*Ndiv[i];
+	};
+
+	printf("Xa=%lf %lf %lf\n",Xa[0],Xa[1],Xa[2]);
+	printf("Xb=%lf %lf %lf\n",Xb[0],Xb[1],Xb[2]);
+	printf("Ndiv=%d %d %d\n",Ndiv[0],Ndiv[1],Ndiv[2]);
+	
+};
+
+
 int main(int argv, char *argc[]){
 	STIFF cij;
 
@@ -244,6 +275,13 @@ int main(int argv, char *argc[]){
 	int Ndiv[3]={2,3,4};
 	fld.mem_alloc(Ndiv);
 	fld.print_Vt();
+
+	DOMAIN dom;
+	double Xa[3]={0.0,0.0,0.0};
+	double Xb[3]={20.0,30.0,10.0};
+
+
+	dom.setup(Xa,Xb,0.1);
 
 	return(0);
 };
