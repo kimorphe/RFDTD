@@ -1,21 +1,5 @@
-class Cmplx{	// Complex Number Class
-	public:
-		double re,im;
-		double Abs();
-		Cmplx(double a, double b);
-		Cmplx();
-		Cmplx Cnjg();
-		void disp();
-		void set(double a, double b);
-		Cmplx operator+(Cmplx z);
-		Cmplx operator-(Cmplx z);
-		Cmplx operator*(Cmplx z);
-		Cmplx operator/(Cmplx z);
-		Cmplx operator*(double z);
-		void operator=(double z);
-	private:
-};
-Cmplx exp(Cmplx z);
+#include <complex>
+using namespace std;
 class InWv{
 	public :
 		double t1,t2,dt,T0;
@@ -31,7 +15,7 @@ class InWv{
 		void set_taxis(double t1, double t2);
 		void out(char *);
 		double df,fmax;
-		Cmplx *Amp;
+		complex<double> *Amp;
 		void DFT();
 		void DFTout(char *);
 		void Amod(double tb, int nsig);

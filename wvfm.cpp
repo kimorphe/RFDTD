@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "wvfm.h"
+#include <complex.h>
 
 #define DB 1
 
@@ -113,18 +114,9 @@ void InWv::out(char *fout){
 	FILE *fp=fopen(fout,"w");
 	int i;
 	for(i=0;i<Nt;i++) fprintf(fp,"%lf %lf\n",t1+dt*i, amp[i]);
-//	for(i=0;i<Nt;i++) fprintf(fp,"%lf\n",amp[i]);
 	fclose(fp);
 }
 
-/*
-void InWv::DFTout(char *fout){
-	FILE *fp=fopen(fout,"w");
-	int i;
-	for(i=0;i<Nt;i++) fprintf(fp,"%lf %lf %lf %lf \n",df*i, Amp[i].re,Amp[i].im,Amp[i].Abs());
-	fclose(fp);
-}
-*/
 
 void InWv::Amod(
 	double tb,	// mean 
@@ -140,18 +132,18 @@ void InWv::Amod(
 	}
 };
 //---------------------------------------------------
-/*
+
 void InWv::DFT(){
 	int i,j;
 	double omg,pi=4.0*atan(1.0),tt;
 	fmax=1./dt;
 	df=fmax/Nt;	
-	Cmplx zi(0.0,1.0);
+	complex <double>zi(0.0,1.0);
 	double dw=2.0*pi*df;
 
-	Amp=(Cmplx *)malloc(sizeof(Cmplx)*Nt);
+	Amp=(complex<double> *)malloc(sizeof(complex<double>)*Nt);
 	for(i=0;i<Nt;i++){
-		Amp[i]=0.0;
+		Amp[i]=complex<double>(0.0,0.0);
 		tt=t1+dt*i;
 	for(j=0;j<Nt;j++){
 		omg=dw*j;
@@ -160,17 +152,33 @@ void InWv::DFT(){
 	}
 
 }
-*/
+void InWv::DFTout(char *fout){
+	FILE *fp=fopen(fout,"w");
+	int i;
+	for(i=0;i<Nt;i++) fprintf(fp,"%lf %lf %lf %lf \n",df*i, Amp[i].real(),Amp[i].imag(),abs(Amp[i]));
+	fclose(fp);
+}
 
 #if DB == 1
 int main(){
 	char fname[]="wvfm.out";
+	char Fname[]="wvfm.dft";
 	InWv wv(200);
 	wv.set_taxis(0.0,2.0);
 	wv.T0=0.2;
 	wv.gen_wvfm();
 	wv.Amod(0.1,3);
 	wv.out(fname);
+
+	wv.DFT();
+	wv.DFTout(Fname);
+
+	complex <double> z,zi,w;
+	zi=complex<double>(0.0,1.0);
+	z=complex<double>(2.0,3.0);
+	w=z*zi;
+	printf("%lf %lf\n",w.real(),w.imag());
+
 
 	return(0);
 };
