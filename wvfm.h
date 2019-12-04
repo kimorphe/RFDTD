@@ -6,8 +6,10 @@ class InWv{
 		double *amp;
 		int Nt,wvtyp,nbrst,nwv;
 		int nsig; //narrowness factor used in Gaussian amplitude modulation
-		InWv(char *);	// constructor (data read from file char*) 
+		void read_prms(char *);	// constructor (data read from file char*) 
+		void set_Nt(int Nt);	// 
 		InWv(int Nt);	// 
+		InWv();	// 
 		void disp();
 		void gen_sin();		
 		void gen_cos();		

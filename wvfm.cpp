@@ -6,11 +6,13 @@
 #include "wvfm.h"
 #include <complex.h>
 
-#define DB 1
+#define DB 0
 
 using namespace std;
 
 //-----------------------------------------------------------
+InWv::InWv(){
+};
 InWv::InWv(int N){	// empty constructor
 	t1=0.0; t2=1.0;	// time range
 	dt=0.0; // sampling interval
@@ -22,7 +24,18 @@ InWv::InWv(int N){	// empty constructor
 	mem_alloc();	
 	
 };
-InWv::InWv(char *fname){
+void InWv::set_Nt(int N){	// empty constructor
+	t1=0.0; t2=1.0;	// time range
+	dt=0.0; // sampling interval
+	T0=0.1;	// fundamental period
+	if(N>1) dt=(t2-t1)/(N-1);
+	wvtyp=1; 	// 1:sine, 2: cosine
+	nbrst=3;	// burst cycles
+	Nt=N;
+	mem_alloc();	
+}
+	
+void InWv::read_prms(char *fname){
 	int i;
 	FILE *fp;
 	char ch[128];
@@ -164,7 +177,7 @@ int main(){
 	char fname[]="wvfm.out";
 	char Fname[]="wvfm.dft";
 	InWv wv(200);
-	wv.set_taxis(0.0,2.0);
+	wv.set_taxis(0.0,1.0);
 	wv.T0=0.2;
 	wv.gen_wvfm();
 	wv.Amod(0.1,3);

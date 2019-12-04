@@ -7,6 +7,14 @@
 
 STIFF::STIFF(){
 	int i,j;
+	double *pt=(double *)malloc(sizeof(double)*6*6);
+	cij=(double **)malloc(sizeof(double *)*6);
+
+	for(i=0;i<6;i++){
+		cij[i]=pt+i*6;
+	};
+	
+
 	for(i=0;i<6;i++){
 	for(j=0;j<6;j++){
 		cij[i][j]=0.0;
@@ -15,9 +23,9 @@ STIFF::STIFF(){
 };
 void STIFF::load(int type){
 	if(type==0){	// isotropic material
-		double cL=6.0;	//[km/s]=[micro sec/mm]
-		double cT=3.0;	//[km/s]=[micro sec/mm]
-		double rho=7.9; //[g/cm^3]=[1,000 x kg/m^3]
+		cL=6.0;	//[km/s]=[micro sec/mm]
+		cT=3.0;	//[km/s]=[micro sec/mm]
+		rho=7.9; //[g/cm^3]=[1,000 x kg/m^3]
 		mu=rho*cT*cT;	// [GPa]
 		lmb=rho*(cL*cL-2.*cT*cT); //[GPa]
 		double K=lmb+2.*mu;

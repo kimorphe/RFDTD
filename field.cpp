@@ -6,22 +6,21 @@
 
 void Field::mem_alloc(int ndiv[3]){
 
-
 	for(int i=0;i<3;i++){
-		ngv[i]=ndiv[i]+1;	// number of grids for stress components 
-		ngs[i]=ndiv[i]+2;	// number of grids for velocity components
+		ngv[i]=ndiv[i];   // number of grids for velocity components 
+		ngs[i]=ndiv[i]+1; // number of grids for stress   components
 	}
-
-	S1=Field::mem_alloc3d(ngs);
-	S2=Field::mem_alloc3d(ngs);
-	S3=Field::mem_alloc3d(ngs);
-	S4=Field::mem_alloc3d(ngs);
-	S5=Field::mem_alloc3d(ngs);
-	S6=Field::mem_alloc3d(ngs);
-
-	V1=Field::mem_alloc3d(ngv);
-	V2=Field::mem_alloc3d(ngv);
-	V3=Field::mem_alloc3d(ngv);
+//		Stress Grids
+	S1=Field::mem_alloc3d(ngs);	// s11
+	S2=Field::mem_alloc3d(ngs);	// s22
+	S3=Field::mem_alloc3d(ngs);	// s33
+	S4=Field::mem_alloc3d(ngs);	// s23
+	S5=Field::mem_alloc3d(ngs);	// s31
+	S6=Field::mem_alloc3d(ngs);	// s12
+//		Velocity Grids
+	V1=Field::mem_alloc3d(ngv);	// v1
+	V2=Field::mem_alloc3d(ngv);	// v2
+	V3=Field::mem_alloc3d(ngv);	// v3
 };
 
 double ***Field::mem_alloc3d(int ndiv[3]){
@@ -64,44 +63,61 @@ void Field::print_Vt(){
 	}
 };
 void Field::v2s(){
-	int i,j,k;
+	int i,j,k,I;
 	int i1,j1,k1;
 
 	double phi[4];
+	double ds[6];
 	double dv11,dv12,dv13;
 	double dv21,dv22,dv23;
 	double dv31,dv32,dv33;
 
-	for(i=0;i<ngs[0];i++){
-	for(j=0;j<ngs[1];j++){
-	for(k=0;k<ngs[2];k++){
-	i1=i+1;
-	j1=j+1;
-	k1=k+1;
+	double dl=4.*sqrt(3.0)*dh/dt;
 
-	phi[0]=V1[i1][j1][k1]-V1[i][j][k];
-	phi[1]=V1[i1][j1][k] -V1[i][j][k1];
-	phi[2]=V1[i1][j][k1] -V1[i][j1][k];
-	phi[3]=V1[i1][j][k]  -V1[i][j1][k1];
-	dv11=0.25*(phi[0]+phi[1]+phi[2]+phi[3]);
-	dv12=0.25*(phi[0]+phi[1]-phi[2]-phi[3]);
-	dv13=0.25*(phi[0]-phi[1]+phi[2]-phi[3]);
+	for(i=1;i<ngs[0]-1;i++){
+	for(j=1;j<ngs[1]-1;j++){
+	for(k=1;k<ngs[2]-1;k++){
+		i1=i-1;
+		j1=j-1;
+		k1=k-1;
 
-	phi[0]=V2[i1][j1][k1]-V2[i][j][k];
-	phi[1]=V2[i1][j1][k] -V2[i][j][k1];
-	phi[2]=V2[i1][j][k1] -V2[i][j1][k];
-	phi[3]=V2[i1][j][k]  -V2[i][j1][k1];
-	dv21=0.25*(phi[0]+phi[1]+phi[2]+phi[3]);
-	dv22=0.25*(phi[0]+phi[1]-phi[2]-phi[3]);
-	dv23=0.25*(phi[0]-phi[1]+phi[2]-phi[3]);
+		phi[0]=V1[i][j][k]   -V1[i1][j1][k1];
+		phi[1]=V1[i][j][k1]  -V1[i1][j1][k];
+		phi[2]=V1[i][j1][k]  -V1[i1][j][k1];
+		phi[3]=V1[i][j1][k1] -V1[i1][j][k];
+		dv11=(phi[0]+phi[1]+phi[2]+phi[3])/dl;
+		dv12=(phi[0]+phi[1]-phi[2]-phi[3])/dl;
+		dv13=(phi[0]-phi[1]+phi[2]-phi[3])/dl;
 
-	phi[0]=V3[i1][j1][k1]-V3[i][j][k];
-	phi[1]=V3[i1][j1][k] -V3[i][j][k1];
-	phi[2]=V3[i1][j][k1] -V3[i][j1][k];
-	phi[3]=V3[i1][j][k]  -V3[i][j1][k1];
-	dv31=0.25*(phi[0]+phi[1]+phi[2]+phi[3]);
-	dv32=0.25*(phi[0]+phi[1]-phi[2]-phi[3]);
-	dv33=0.25*(phi[0]-phi[1]+phi[2]-phi[3]);
+		phi[0]=V2[i][j][k]   -V2[i1][j1][k1];
+		phi[1]=V2[i][j][k1]  -V2[i1][j1][k];
+		phi[2]=V2[i][j1][k]  -V2[i1][j][k1];
+		phi[3]=V2[i][j1][k1] -V2[i1][j][k];
+		dv21=(phi[0]+phi[1]+phi[2]+phi[3])/dl;
+		dv22=(phi[0]+phi[1]-phi[2]-phi[3])/dl;
+		dv23=(phi[0]-phi[1]+phi[2]-phi[3])/dl;
+
+		phi[0]=V3[i1][j1][k1]-V3[i][j][k];
+		phi[1]=V3[i1][j1][k] -V3[i][j][k1];
+		phi[2]=V3[i1][j][k1] -V3[i][j1][k];
+		phi[3]=V3[i1][j][k]  -V3[i][j1][k1];
+		dv31=(phi[0]+phi[1]+phi[2]+phi[3])/dl;
+		dv32=(phi[0]+phi[1]-phi[2]-phi[3])/dl;
+		dv33=(phi[0]-phi[1]+phi[2]-phi[3])/dl;
+
+		for(I=0;I<6;I++){
+			ds[I]=
+			 Cij[I][0]*dv11+Cij[I][1]*dv22+Cij[I][2]*dv33
+			+Cij[I][3]*(dv32+dv23)
+			+Cij[I][4]*(dv13+dv31)
+			+Cij[I][5]*(dv21+dv12);
+		}
+		S1[i][j][k]+=ds[0];
+		S2[i][j][k]+=ds[1];
+		S3[i][j][k]+=ds[2];
+		S4[i][j][k]+=ds[3];
+		S5[i][j][k]+=ds[4];
+		S6[i][j][k]+=ds[5];
 	}
 	}
 	}
@@ -116,50 +132,56 @@ void Field::s2v(){
 	double ds11,ds22,ds33;
 	double ds42,ds43,ds51,ds53,ds61,ds62;
 
+	double dl=4.*sqrt(3.0)*dh/dt*rho;
+
 	for(i=0;i<ngv[0];i++){
 	for(j=0;j<ngv[1];j++){
 	for(k=0;k<ngv[2];k++){
-	i1=i+1;
-	j1=j+1;
-	k1=k+1;
-	phi[0]=S1[i1][j1][k1]-S1[i][j][k];
-	phi[1]=S1[i1][j1][k] -S1[i][j][k1];
-	phi[2]=S1[i1][j][k1] -S1[i][j1][k];
-	phi[3]=S1[i1][j][k]  -S1[i][j1][k1];
-	ds11=0.25*(phi[0]+phi[1]+phi[2]+phi[3]);
+		i1=i+1;
+		j1=j+1;
+		k1=k+1;
+		phi[0]=S1[i1][j1][k1]-S1[i][j][k];
+		phi[1]=S1[i1][j1][k] -S1[i][j][k1];
+		phi[2]=S1[i1][j][k1] -S1[i][j1][k];
+		phi[3]=S1[i1][j][k]  -S1[i][j1][k1];
+		ds11=(phi[0]+phi[1]+phi[2]+phi[3])/dl;
 
-	phi[0]=S2[i1][j1][k1]-S2[i][j][k];
-	phi[1]=S2[i1][j1][k] -S2[i][j][k1];
-	phi[2]=S2[i1][j][k1] -S2[i][j1][k];
-	phi[3]=S2[i1][j][k]  -S2[i][j1][k1];
-	ds22=0.25*(phi[0]+phi[1]-phi[2]-phi[3]);
+		phi[0]=S2[i1][j1][k1]-S2[i][j][k];
+		phi[1]=S2[i1][j1][k] -S2[i][j][k1];
+		phi[2]=S2[i1][j][k1] -S2[i][j1][k];
+		phi[3]=S2[i1][j][k]  -S2[i][j1][k1];
+		ds22=(phi[0]+phi[1]-phi[2]-phi[3])/dl;
 
-	phi[0]=S3[i1][j1][k1]-S3[i][j][k];
-	phi[1]=S3[i1][j1][k] -S3[i][j][k1];
-	phi[2]=S3[i1][j][k1] -S3[i][j1][k];
-	phi[3]=S3[i1][j][k]  -S3[i][j1][k1];
-	ds33=0.25*(phi[0]-phi[1]+phi[2]-phi[3]);
+		phi[0]=S3[i1][j1][k1]-S3[i][j][k];
+		phi[1]=S3[i1][j1][k] -S3[i][j][k1];
+		phi[2]=S3[i1][j][k1] -S3[i][j1][k];
+		phi[3]=S3[i1][j][k]  -S3[i][j1][k1];
+		ds33=(phi[0]-phi[1]+phi[2]-phi[3])/dl;
 
-	phi[0]=S4[i1][j1][k1]-S4[i][j][k];
-	phi[1]=S4[i1][j1][k] -S4[i][j][k1];
-	phi[2]=S4[i1][j][k1] -S4[i][j1][k];
-	phi[3]=S4[i1][j][k]  -S4[i][j1][k1];
-	ds42=0.25*(phi[0]+phi[1]-phi[2]-phi[3]);
-	ds43=0.25*(phi[0]-phi[1]+phi[2]-phi[3]);
+		phi[0]=S4[i1][j1][k1]-S4[i][j][k];
+		phi[1]=S4[i1][j1][k] -S4[i][j][k1];
+		phi[2]=S4[i1][j][k1] -S4[i][j1][k];
+		phi[3]=S4[i1][j][k]  -S4[i][j1][k1];
+		ds42=(phi[0]+phi[1]-phi[2]-phi[3])/dl;
+		ds43=(phi[0]-phi[1]+phi[2]-phi[3])/dl;
 
-	phi[0]=S5[i1][j1][k1]-S5[i][j][k];
-	phi[1]=S5[i1][j1][k] -S5[i][j][k1];
-	phi[2]=S5[i1][j][k1] -S5[i][j1][k];
-	phi[3]=S5[i1][j][k]  -S5[i][j1][k1];
-	ds51=0.25*(phi[0]+phi[1]+phi[2]+phi[3]);
-	ds53=0.25*(phi[0]-phi[1]+phi[2]-phi[3]);
+		phi[0]=S5[i1][j1][k1]-S5[i][j][k];
+		phi[1]=S5[i1][j1][k] -S5[i][j][k1];
+		phi[2]=S5[i1][j][k1] -S5[i][j1][k];
+		phi[3]=S5[i1][j][k]  -S5[i][j1][k1];
+		ds51=(phi[0]+phi[1]+phi[2]+phi[3])/dl;
+		ds53=(phi[0]-phi[1]+phi[2]-phi[3])/dl;
 
-	phi[0]=S6[i1][j1][k1]-S6[i][j][k];
-	phi[1]=S6[i1][j1][k] -S6[i][j][k1];
-	phi[2]=S6[i1][j][k1] -S6[i][j1][k];
-	phi[3]=S6[i1][j][k]  -S6[i][j1][k1];
-	ds61=0.25*(phi[0]+phi[1]+phi[2]+phi[3]);
-	ds62=0.25*(phi[0]+phi[1]-phi[2]-phi[3]);
+		phi[0]=S6[i1][j1][k1]-S6[i][j][k];
+		phi[1]=S6[i1][j1][k] -S6[i][j][k1];
+		phi[2]=S6[i1][j][k1] -S6[i][j1][k];
+		phi[3]=S6[i1][j][k]  -S6[i][j1][k1];
+		ds61=(phi[0]+phi[1]+phi[2]+phi[3])/dl;
+		ds62=(phi[0]+phi[1]-phi[2]-phi[3])/dl;
+
+		V1[i][j][k]+=(ds11+ds62+ds53);
+		V2[i][j][k]+=(ds61+ds22+ds43);
+		V3[i][j][k]+=(ds51+ds42+ds33);
 	}
 	}
 	}
@@ -172,6 +194,7 @@ void DOMAIN::setup(
 ){
 	dh=h;
 	for(int i=0;i<3;i++){
+		printf("i=%d\n",i);
 		Xa[i]=xa[i];
 		Xb[i]=xb[i];
 		Ndiv[i]=ceil((Xb[i]-Xa[i])/dh);
@@ -179,9 +202,36 @@ void DOMAIN::setup(
 		Xb[i]=Xa[i]+dh*Ndiv[i];
 	};
 
+	rho=1.0;
+
 	printf("Xa=%lf %lf %lf\n",Xa[0],Xa[1],Xa[2]);
 	printf("Xb=%lf %lf %lf\n",Xb[0],Xb[1],Xb[2]);
 	printf("Ndiv=%d %d %d\n",Ndiv[0],Ndiv[1],Ndiv[2]);
+
+	cij.load(0);
+	cij.print_cij();
+
+	Nt=100;
+	wv.set_Nt(Nt);
+	wv.set_taxis(0.0,1.0);	// [t1,t2]
+	wv.T0=0.2;		// T0 (period)
+	wv.gen_wvfm();		// generate waveform
+	wv.Amod(0.1,4);		// amlitude modlulation
+	char fname[]="wvfm.out";
+	wv.out(fname);	
+
+	dt=wv.dt;
+	printf("CFL=%lf\n",Courant(dt,cij.cL,dh));
+
+	fld.mem_alloc(Ndiv);
+	fld.dh=dh;
+	fld.dt=dt;
+	fld.rho=rho;
+
+	fld.Cij=cij.cij;
 	
+};
+double Courant(double dt, double vel, double ds){
+	return(vel*dt/ds);
 };
 

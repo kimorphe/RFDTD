@@ -1,4 +1,5 @@
-
+#include"wvfm.h"
+double Courant(double dt, double vel, double ds);
 class Field{
 	public:
 		double ***V1,***V2,***V3;
@@ -12,16 +13,22 @@ class Field{
 		void v2s();
 		int Ndiv[3];
 		int ngs[3],ngv[3];
+		double dh,dt,rho;
+		//double Cij[6][6];
+		double **Cij;
 	private:
 };
 class DOMAIN{
 	public:
 		double Xa[3],Xb[3];
 		int Ndiv[3];
-		double dh,dx[3];
+		int Nt;
+		double dh,dt,dx[3];
+		double rho;
 		STIFF cij;
 		Field fld;
 		void setup(double Xa[3],double Xb[3],double dh);
+		InWv wv;
 	private:
 };
 

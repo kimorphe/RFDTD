@@ -7,22 +7,19 @@
 #define __field 1
 
 int main(int argv, char *argc[]){
-	STIFF cij;
-
-	cij.load(0);
-	cij.print_cij();
-
-	Field fld;
-	int Ndiv[3]={2,3,4};
-	fld.mem_alloc(Ndiv);
-	fld.print_Vt();
 
 	DOMAIN dom;
 	double Xa[3]={0.0,0.0,0.0};
 	double Xb[3]={20.0,30.0,10.0};
+	double dx=0.1;
+	dom.setup(Xa,Xb,dx);
 
-
-	dom.setup(Xa,Xb,0.1);
+	int i;
+	for(i=0;i<dom.Nt;i++){
+		dom.fld.s2v();
+		dom.fld.v2s();
+	};
 
 	return(0);
 };
+
