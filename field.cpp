@@ -229,7 +229,7 @@ void DOMAIN::setup(
 
 	fld.Cij=cij.cij;
 
-	src.setup();
+	src.setup();	// Source class instance
 	dt=src.wv.dt;
 	Nt=src.wv.Nt;
 	printf("CFL=%lf\n",Courant(dt,cij.cL,dh));
@@ -245,6 +245,11 @@ void DOMAIN::setup(
 	for(i=0;i<3;i++){
 		if(indx1[i]<0) indx1[i]=0;
 		if(indx2[i]>=Ng[i]-1) indx1[i]=Ng[i]-1;
+	};
+
+	for(i=0;i<3;i++){
+		src.indx1[i]=indx1[i];
+		src.indx2[i]=indx2[i];
 	};
 	for(i=indx1[0];i<indx2[0]+1;i++){
 	for(j=indx1[1];j<indx2[1]+1;j++){
@@ -278,5 +283,15 @@ void DOMAIN::cod2indx(
 };
 double Courant(double dt, double vel, double ds){
 	return(vel*dt/ds);
+};
+void DOMAIN::apply_source(int it){
+	int i,j,k;
+	for(i=src.indx1[0];i<src.indx2[0]+1;i++){
+	for(j=src.indx1[1];j<src.indx2[1]+1;j++){
+	for(k=src.indx1[2];k<src.indx2[2]+1;k++){
+		fld.S3[i][j][k]=src.wv.amp[it];
+	}
+	}
+	}
 };
 

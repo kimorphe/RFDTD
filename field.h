@@ -32,6 +32,7 @@ class DOMAIN{
 //		InWv wv;
 		SRC src;
 		void cod2indx(double *xcod, int *indx, int type);
+		void apply_source(int it);
 	private:
 };
 
