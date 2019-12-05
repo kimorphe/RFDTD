@@ -33,6 +33,7 @@ class DOMAIN{
 		SRC src;
 		void cod2indx(double *xcod, int *indx, int type);
 		void apply_source(int it);
+		void write_v(char *fname);
 	private:
 };
 

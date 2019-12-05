@@ -14,11 +14,19 @@ int main(int argv, char *argc[]){
 	double dx=0.1;
 	dom.setup(Xa,Xb,dx);
 
-	int i;
+	int i,num=1;
+	char fname[128];
+	FILE *fp;
 	for(i=0;i<dom.Nt;i++){
 		printf("i=%d\n",i);
+		dom.apply_source(i);
 		dom.fld.s2v();
 		dom.fld.v2s();
+
+		sprintf(fname,"v%d.out",num);
+		puts(fname);
+		dom.write_v(fname);
+		num++;
 	};
 
 	return(0);

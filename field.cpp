@@ -43,7 +43,7 @@ double ***Field::mem_alloc3d(int ndiv[3]){
 	for(i=0; i<Ndiv[0]; i++){
 	for(j=0; j<Ndiv[1]; j++){
 	for(k=0; k<Ndiv[2]; k++){
-		p3[i][j][k]=isum++;
+		p3[i][j][k]=0.0;
 	}
 	}
 	}
@@ -157,6 +157,8 @@ void Field::s2v(){
 		phi[2]=S3[i1][j][k1] -S3[i][j1][k];
 		phi[3]=S3[i1][j][k]  -S3[i][j1][k1];
 		ds33=(phi[0]-phi[1]+phi[2]-phi[3])/dl;
+	//	if(abs(ds33)>0.0) printf("ds33=%lf\n",ds33);
+	//	if(abs(S3[i1][j1][k1])>0.0) printf("S3=%lf,phi=%lf %lf %lf %lf dl=%lf\n",S3[i1][j1][k1],phi[0],phi[1],phi[2],phi[3],dl);
 
 		phi[0]=S4[i1][j1][k1]-S4[i][j][k];
 		phi[1]=S4[i1][j1][k] -S4[i][j][k1];
@@ -202,7 +204,6 @@ void DOMAIN::setup(
 		Xb[i]=Xa[i]+dh*Ndiv[i];
 	};
 
-	rho=1.0;
 
 	printf("Xa=%lf %lf %lf\n",Xa[0],Xa[1],Xa[2]);
 	printf("Xb=%lf %lf %lf\n",Xb[0],Xb[1],Xb[2]);
@@ -210,6 +211,8 @@ void DOMAIN::setup(
 
 	cij.load(0);
 	cij.print_cij();
+	rho=cij.rho;
+	printf("rho=%lf\n",rho);
 /*
 	Nt=100;
 	wv.set_Nt(Nt);
@@ -224,7 +227,6 @@ void DOMAIN::setup(
 */
 	fld.mem_alloc(Ndiv);
 	fld.dh=dh;
-	fld.dt=dt;
 	fld.rho=rho;
 
 	fld.Cij=cij.cij;
@@ -232,6 +234,7 @@ void DOMAIN::setup(
 	src.setup();	// Source class instance
 	dt=src.wv.dt;
 	Nt=src.wv.Nt;
+	fld.dt=dt;
 	printf("CFL=%lf\n",Courant(dt,cij.cL,dh));
 
 
@@ -286,12 +289,33 @@ double Courant(double dt, double vel, double ds){
 };
 void DOMAIN::apply_source(int it){
 	int i,j,k;
-	for(i=src.indx1[0];i<src.indx2[0]+1;i++){
-	for(j=src.indx1[1];j<src.indx2[1]+1;j++){
-	for(k=src.indx1[2];k<src.indx2[2]+1;k++){
-		fld.S3[i][j][k]=src.wv.amp[it];
+	int indx1[3],indx2[3];
+	for(i=0;i<3;i++){
+		indx1[i]=src.indx1[i];
+		indx2[i]=src.indx2[i];
+	};
+	double amp=src.wv.amp[it];
+	for(i=indx1[0]; i<=indx2[0]; i++){
+	for(j=indx1[1]; j<=indx2[1]; j++){
+	for(k=indx1[2]; k<=indx2[2]; k++){
+		fld.S3[i][j][k]=amp;
 	}
 	}
 	}
 };
 
+void DOMAIN::write_v(char *fname){
+	FILE *fp=fopen(fname,"w");
+	int i,j,k;
+	k=Ndiv[2]-1;
+	double v1,v2,v3;
+	for(i=0;i<Ndiv[0];i++){
+	for(j=0;j<Ndiv[1];j++){
+		v1=fld.V1[i][j][k];
+		v2=fld.V2[i][j][k];
+		v3=fld.V3[i][j][k];
+		fprintf(fp,"%lf %lf %lf\n",v1,v2,v3);
+	}
+	}
+	fclose(fp);
+};
