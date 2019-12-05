@@ -1,4 +1,5 @@
-#include"wvfm.h"
+//#include"wvfm.h"
+#include"source.h"
 double Courant(double dt, double vel, double ds);
 class Field{
 	public:
@@ -28,7 +29,9 @@ class DOMAIN{
 		STIFF cij;
 		Field fld;
 		void setup(double Xa[3],double Xb[3],double dh);
-		InWv wv;
+//		InWv wv;
+		SRC src;
+		void cod2indx(double *xcod, int *indx, int type);
 	private:
 };
 

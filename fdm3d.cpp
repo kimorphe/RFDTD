@@ -16,6 +16,7 @@ int main(int argv, char *argc[]){
 
 	int i;
 	for(i=0;i<dom.Nt;i++){
+		printf("i=%d\n",i);
 		dom.fld.s2v();
 		dom.fld.v2s();
 	};

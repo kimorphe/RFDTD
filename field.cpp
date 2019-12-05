@@ -210,7 +210,7 @@ void DOMAIN::setup(
 
 	cij.load(0);
 	cij.print_cij();
-
+/*
 	Nt=100;
 	wv.set_Nt(Nt);
 	wv.set_taxis(0.0,1.0);	// [t1,t2]
@@ -219,17 +219,62 @@ void DOMAIN::setup(
 	wv.Amod(0.1,4);		// amlitude modlulation
 	char fname[]="wvfm.out";
 	wv.out(fname);	
-
 	dt=wv.dt;
 	printf("CFL=%lf\n",Courant(dt,cij.cL,dh));
-
+*/
 	fld.mem_alloc(Ndiv);
 	fld.dh=dh;
 	fld.dt=dt;
 	fld.rho=rho;
 
 	fld.Cij=cij.cij;
-	
+
+	src.setup();
+	dt=src.wv.dt;
+	Nt=src.wv.Nt;
+	printf("CFL=%lf\n",Courant(dt,cij.cL,dh));
+
+
+	int i,j,k,nsg=0,Ng[3];
+	int indx1[3],indx2[3];
+	cod2indx(src.xs1,indx1,0);
+	cod2indx(src.xs2,indx2,0);
+	Ng[0]=Ndiv[0]+1;
+	Ng[1]=Ndiv[1]+1;
+	Ng[2]=Ndiv[2]+1;
+	for(i=0;i<3;i++){
+		if(indx1[i]<0) indx1[i]=0;
+		if(indx2[i]>=Ng[i]-1) indx1[i]=Ng[i]-1;
+	};
+	for(i=indx1[0];i<indx2[0]+1;i++){
+	for(j=indx1[1];j<indx2[1]+1;j++){
+	for(k=indx1[2];k<indx2[2]+1;k++){
+		nsg++;
+	}
+	}
+	}
+	printf("indx1=%d %d %d\n",indx1[0],indx1[1],indx1[2]);
+	printf("indx2=%d %d %d\n",indx2[0],indx2[1],indx2[2]);
+	printf("nsg=%d\n",nsg);
+		
+};
+void DOMAIN::cod2indx(
+	double *xcod,	// coordinate (x,y)
+	int *indx,	// index (i,j)
+	int type	// 0:stress, 1: velocity
+){
+	if(type==0){
+		indx[0]=floor((xcod[0]-Xa[0])/dh);
+		indx[1]=floor((xcod[1]-Xa[1])/dh);
+		indx[2]=floor((xcod[2]-Xa[2])/dh);
+	}else if(type==1){
+		indx[0]=floor((xcod[0]-Xa[0])/dh-0.5);
+		indx[1]=floor((xcod[1]-Xa[1])/dh-0.5);
+		indx[2]=floor((xcod[2]-Xa[2])/dh-0.5);
+	}else{
+		puts("Invalid grid type specified in cod2indx");
+		exit(-1);
+	}
 };
 double Courant(double dt, double vel, double ds){
 	return(vel*dt/ds);
