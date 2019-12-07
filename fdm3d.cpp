@@ -22,11 +22,12 @@ int main(int argv, char *argc[]){
 		dom.apply_source(i);
 		dom.fld.s2v();
 		dom.fld.v2s();
-
+		if(i%5==0){
 		sprintf(fname,"v%d.out",num);
 		puts(fname);
 		dom.write_v(fname);
 		num++;
+		}
 	};
 
 	return(0);

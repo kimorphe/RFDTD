@@ -32,9 +32,9 @@ void STIFF::load(int type){
 		cij[0][0]=K;
 		cij[1][1]=K;
 		cij[2][2]=K;
-		cij[3][3]=2.*mu;
-		cij[4][4]=2.*mu;
-		cij[5][5]=2.*mu;
+		cij[3][3]=mu;
+		cij[4][4]=mu;
+		cij[5][5]=mu;
 
 		cij[0][1]=lmb; cij[1][0]=lmb;
 		cij[0][2]=lmb; cij[2][0]=lmb;

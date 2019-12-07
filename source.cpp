@@ -2,7 +2,7 @@
 
 void SRC::setup(){
 
-	int Nt=100;
+	int Nt=300;
 	wv.set_Nt(Nt);
 	wv.set_taxis(0.0,1.0);	// [t1,t2]
 	wv.T0=0.2;		// T0 (period)

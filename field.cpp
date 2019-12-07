@@ -72,7 +72,8 @@ void Field::v2s(){
 	double dv21,dv22,dv23;
 	double dv31,dv32,dv33;
 
-	double dl=4.*sqrt(3.0)*dh/dt;
+	double dl=4.*dh/dt;
+
 
 	for(i=1;i<ngs[0]-1;i++){
 	for(j=1;j<ngs[1]-1;j++){
@@ -97,10 +98,11 @@ void Field::v2s(){
 		dv22=(phi[0]+phi[1]-phi[2]-phi[3])/dl;
 		dv23=(phi[0]-phi[1]+phi[2]-phi[3])/dl;
 
-		phi[0]=V3[i1][j1][k1]-V3[i][j][k];
-		phi[1]=V3[i1][j1][k] -V3[i][j][k1];
-		phi[2]=V3[i1][j][k1] -V3[i][j1][k];
-		phi[3]=V3[i1][j][k]  -V3[i][j1][k1];
+
+		phi[0]=V3[i][j][k]   -V3[i1][j1][k1];
+		phi[1]=V3[i][j][k1]  -V3[i1][j1][k];
+		phi[2]=V3[i][j1][k]  -V3[i1][j][k1];
+		phi[3]=V3[i][j1][k1] -V3[i1][j][k];
 		dv31=(phi[0]+phi[1]+phi[2]+phi[3])/dl;
 		dv32=(phi[0]+phi[1]-phi[2]-phi[3])/dl;
 		dv33=(phi[0]-phi[1]+phi[2]-phi[3])/dl;
@@ -132,7 +134,7 @@ void Field::s2v(){
 	double ds11,ds22,ds33;
 	double ds42,ds43,ds51,ds53,ds61,ds62;
 
-	double dl=4.*sqrt(3.0)*dh/dt*rho;
+	double dl=4.*dh/dt*rho;
 
 	for(i=0;i<ngv[0];i++){
 	for(j=0;j<ngv[1];j++){
@@ -285,7 +287,7 @@ void DOMAIN::cod2indx(
 	}
 };
 double Courant(double dt, double vel, double ds){
-	return(vel*dt/ds);
+	return(vel*dt/ds*sqrt(3.0));
 };
 void DOMAIN::apply_source(int it){
 	int i,j,k;

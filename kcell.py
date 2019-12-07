@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-fname="v100.out";
+fname="v60.out";
 
 fp=open(fname,"r");
 
@@ -37,8 +37,8 @@ K=np.transpose(np.reshape(K,[Ndiv[0],Ndiv[1]]))
 
 fig=plt.figure();
 ax=fig.add_subplot(111)
-#im=ax.imshow(K,origin="lower",extent=[Xa[0],Xb[0],Xa[1],Xb[1]],interpolation="none",vmin=0,vmax=2);
-im=ax.imshow(K,origin="lower",extent=[Xa[0],Xb[0],Xa[1],Xb[1]],interpolation="none",cmap="jet");
+im=ax.imshow(K,origin="lower",extent=[Xa[0],Xb[0],Xa[1],Xb[1]],interpolation="none",vmin=-0.001,vmax=0.001,cmap="jet");
+#im=ax.imshow(K,origin="lower",extent=[Xa[0],Xb[0],Xa[1],Xb[1]],interpolation="none",cmap="jet");
 plt.colorbar(im);
 plt.show();
 
