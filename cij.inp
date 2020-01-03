@@ -1,0 +1,6 @@
+# tpye (0:isotropic, 1:anisotropic)
+ 0
+# rho: density [g/cm^3]
+ 8.0
+# cL cT: phase velocity [km/s]
+ 6.0 3.0

@@ -191,56 +191,76 @@ void Field::s2v(){
 	}
 };
 
+void DOMAIN::set_size(char *fname){
+	FILE *fp=fopen(fname,"r");
+	char cbff[128];
+	fgets(cbff,128,fp);
+	fscanf(fp,"%lf %lf %lf\n",Xa,Xa+1,Xa+2);
+	fscanf(fp,"%lf %lf %lf\n",Xb,Xb+1,Xb+2);
+	fgets(cbff,128,fp);
+	fscanf(fp,"%d\n",&n_lmb);
+	fclose(fp);
+	printf("Xb=%lf %lf %lf\n",Xb[0],Xb[1],Xb[2]);
+	printf("nlmb=%d\n",n_lmb);
+	fclose(fp);
+};
+void DOMAIN::set_cij(char *fname){
+	src.load_prms(fname);
+	cij.fload(fname);
+	cij.print_cij();
+	rho=cij.rho;
+	printf("rho=%lf\n",rho);
+};
+void DOMAIN::set_src(char *fname){
+	src.load_prms(fname);
+
+	int ndim=3;
+	int n_T=ceil( cij.cL/cij.cT*n_lmb*sqrt(ndim));
+	if(n_T>src.n_T) src.n_T=n_T;
+
+	double CFL;
+
+	dh=src.T0*cij.cT/n_lmb;
+	dt=src.T0/src.n_T;
+	CFL=cij.cL*dt*sqrt(ndim)/dh;
+	printf("CFL=%lf\n",CFL);
+	printf("dt=%lf, dh=%lf\n",dt,dh);
+	printf("n_lmb=%d, n_T=%d\n",src.n_T,n_lmb);
+
+	src.set_wvfm();
+
+};
+
+
 void DOMAIN::setup(
-	double xa[3],
-	double xb[3],
-	double h
 ){
-	dh=h;
-	for(int i=0;i<3;i++){
-		printf("i=%d\n",i);
-		Xa[i]=xa[i];
-		Xb[i]=xb[i];
-		Ndiv[i]=ceil((Xb[i]-Xa[i])/dh);
-		dx[i]=dh;
+	int i;
+	for(i=0;i<3;i++){
+		Wd[i]=Xb[i]-Xa[i];
+		Ndiv[i]=ceil(Wd[i]/dh);
+		Wd[i]=dh*Ndiv[i];
 		Xb[i]=Xa[i]+dh*Ndiv[i];
 	};
-
 
 	printf("Xa=%lf %lf %lf\n",Xa[0],Xa[1],Xa[2]);
 	printf("Xb=%lf %lf %lf\n",Xb[0],Xb[1],Xb[2]);
 	printf("Ndiv=%d %d %d\n",Ndiv[0],Ndiv[1],Ndiv[2]);
 
-	cij.load(0);
-	cij.print_cij();
 	rho=cij.rho;
 	printf("rho=%lf\n",rho);
-/*
-	Nt=100;
-	wv.set_Nt(Nt);
-	wv.set_taxis(0.0,1.0);	// [t1,t2]
-	wv.T0=0.2;		// T0 (period)
-	wv.gen_wvfm();		// generate waveform
-	wv.Amod(0.1,4);		// amlitude modlulation
-	char fname[]="wvfm.out";
-	wv.out(fname);	
-	dt=wv.dt;
-	printf("CFL=%lf\n",Courant(dt,cij.cL,dh));
-*/
+
 	fld.mem_alloc(Ndiv);
 	fld.dh=dh;
 	fld.rho=rho;
-
 	fld.Cij=cij.cij;
 
-	src.setup();	// Source class instance
 	dt=src.wv.dt;
 	Nt=src.wv.Nt;
 	fld.dt=dt;
 	printf("CFL=%lf\n",Courant(dt,cij.cL,dh));
 
 
-	int i,j,k,nsg=0,Ng[3];
+	int j,k,nsg=0,Ng[3];
 	int indx1[3],indx2[3];
 	cod2indx(src.xs1,indx1,0);
 	cod2indx(src.xs2,indx2,0);

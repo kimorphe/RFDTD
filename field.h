@@ -21,16 +21,20 @@ class Field{
 };
 class DOMAIN{
 	public:
-		double Xa[3],Xb[3];
-		int Ndiv[3];
-		int Nt;
+		double Xa[3],Xb[3],Wd[3];
+		int Ndiv[3],n_lmb;
+		int Nt,n_T0;
 		double dh,dt,dx[3];
 		double rho;
 		STIFF cij;
 		Field fld;
-		void setup(double Xa[3],double Xb[3],double dh);
+		void setup();
 //		InWv wv;
 		SRC src;
+		void set_size(char *fname);
+		void set_src(char *fname);
+		void set_cij(char *fname);
+
 		void cod2indx(double *xcod, int *indx, int type);
 		void apply_source(int it);
 		void write_v(char *fname);

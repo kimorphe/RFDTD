@@ -21,6 +21,44 @@ STIFF::STIFF(){
 	}
 	}
 };
+void STIFF::fload(char *fname){
+	char cbff[128];
+	FILE *fp=fopen(fname,"r");
+	if(fp==NULL){
+		printf("Cannot find file %s\n",fname);	
+		printf(" --> abort process.\n");
+		exit(-1);
+	}
+	
+	fgets(cbff,128,fp);
+	fscanf(fp,"%d\n",&type);
+
+	if(type==0){
+		fgets(cbff,128,fp);
+		fscanf(fp,"%lf\n",&rho);
+		fgets(cbff,128,fp);
+		fscanf(fp,"%lf %lf\n",&cL,&cT);
+
+		mu=rho*cT*cT;	// [GPa]
+		lmb=rho*(cL*cL-2.*cT*cT); //[GPa]
+		double K=lmb+2.*mu;
+		cij[0][0]=K;
+		cij[1][1]=K;
+		cij[2][2]=K;
+		cij[3][3]=mu;
+		cij[4][4]=mu;
+		cij[5][5]=mu;
+
+		cij[0][1]=lmb; cij[1][0]=lmb;
+		cij[0][2]=lmb; cij[2][0]=lmb;
+		
+	}else{
+		printf("Thie version cannot read anisotropic stiffness tensor components\n");
+		exit(-1);
+	}
+	
+	fclose(fp);
+};
 void STIFF::load(int type){
 	if(type==0){	// isotropic material
 		cL=6.0;	//[km/s]=[micro sec/mm]

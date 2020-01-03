@@ -1,3 +1,40 @@
-Elastodynamic FDTD based on rotated grid
+3D Elastodynamic FDTD based on rotated grid
 --> inhomogeneous anisotropic media will be modlled.
+
+
+Source Files:
+	fdm3d.cpp
+		FDTD main
+	cij.cpp
+		handles stiffness constants
+	field.cpp
+		3D domain & field classes
+	source.cpp
+		incident wave and source parameters
+	wvfm.cpp
+		waveforms & signal processing
+	#domain.cpp
+
+Header Files:
+	cij.h
+	fdm2d.h
+	field.h
+	source.h
+	wvfm.h
+#-------------------------------------------------
+Executable:
+	fdm3d
+Input:
+	fdm3d.inp (domain, field, space discretization)
+	cij.inp (stiffness constant and mass density)
+	source.inp (souce and waveform)
+Output:
+	v***.out: snapshot of particle velocity field
+
+Makefile:
+	makefile
+
+#-------------------------------------------------
+Python Codes:
+	kcell.py
 

@@ -8,5 +8,10 @@ class SRC{
 		int stype[6];	// source type (0:off, 1: on)
 		InWv wv;	// waveform (source function)
 		void setup();
+		void set_wvfm();
+		void load_prms(char *fname);
+		int n_T;	// sampling point/fundamental period
+		double T0;	// fundamental period
+		double Td;	// time range
 	private:
 };

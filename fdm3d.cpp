@@ -8,15 +8,21 @@
 
 int main(int argv, char *argc[]){
 
+	char finp[128]="fdm3d.inp";
+	char fcij[128]="cij.inp";
+	char fsrc[128]="source.inp";
+
 	DOMAIN dom;
-	double Xa[3]={0.0,0.0,0.0};
-	double Xb[3]={20.0,30.0,10.0};
-	double dx=0.1;
-	dom.setup(Xa,Xb,dx);
+	dom.set_size(finp);
+	dom.set_cij(fcij);
+	dom.set_src(fsrc);
+	dom.setup();
+
+	exit(-1);
+
 
 	int i,num=1;
 	char fname[128];
-	FILE *fp;
 	for(i=0;i<dom.Nt;i++){
 		printf("i=%d\n",i);
 		dom.apply_source(i);
