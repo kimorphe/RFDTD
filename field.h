@@ -38,6 +38,9 @@ class DOMAIN{
 		void cod2indx(double *xcod, int *indx, int type);
 		void apply_source(int it);
 		void write_v(char *fname,int i);
+		void write_xslice(int it, double xout);
+		void write_yslice(int it, double yout);
+		void write_zslice(int it, double zout);
 	private:
 };
 

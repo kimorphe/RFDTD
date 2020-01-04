@@ -28,13 +28,11 @@ class IMG:
         for row in fp:
             dat=row.lstrip().split(",");
             dat=list(map(float,dat))
-            #K.append(dat[2]);
-            K.append(dat[0]*dat[0]+dat[2]*dat[2]);
+            K.append(dat[0]*dat[0]+dat[1]*dat[1]+dat[2]*dat[2]);
         fp.close();
 
         K=np.sqrt(np.array(K))
-        #K=np.transpose(np.reshape(K,[Ndiv[0],Ndiv[1]]))
-        K=np.transpose(np.reshape(K,[Ndiv[0],Ndiv[2]]))
+        K=np.transpose(np.reshape(K,[Ndiv[0],Ndiv[1]]))
 
         self.Xa=Xa;
         self.Xb=Xb;
@@ -43,11 +41,9 @@ class IMG:
         self.fname=fname
 
     def show(self,ax):
-        #im=ax.imshow(K,origin="lower",extent=[Xa[0],Xb[0],Xa[1],Xb[1]],interpolation="none",vmin=-0.01,vmax=0.01,cmap="jet");
         Xa=self.Xa;
         Xb=self.Xb;
-        #im=ax.imshow(self.K,origin="lower",extent=[Xa[0],Xb[0],Xa[1],Xb[1]],interpolation="bilinear",cmap="jet",vmin=-0.005,vmax=0.005);
-        im=ax.imshow(self.K,origin="lower",extent=[Xa[0],Xb[0],Xa[2],Xb[2]],interpolation="bilinear",cmap="jet",vmin=0.0,vmax=0.003);
+        im=ax.imshow(self.K,origin="lower",extent=[Xa[0],Xb[0],Xa[1],Xb[1]],interpolation="bilinear",cmap="jet",vmin=-0.005,vmax=0.005);
         if self.nshow==0:
             plt.colorbar(im);
         ax.set_aspect(1.0)
@@ -59,9 +55,9 @@ if __name__=="__main__":
     ax=fig.add_subplot(111)
 
     vdat=IMG()
-    nums=np.arange(1,48,2)
+    nums=np.arange(1,30,1)
     for k in nums:
-        fname="v"+str(k)+".out";
+        fname="v"+str(k)+"z.out";
         vdat.load(fname)
         vdat.show(ax)
         fout=fname.replace(".out",".png")

@@ -3,7 +3,7 @@
 # time range Td ( [0,Td] )
  5.0
 # n_T ( sampling points / period T0)
- 60
+ 30
 # souce area xs1[3], xs2[3]
  9.95 14.95 10.0
 10.05 15.05 10.0

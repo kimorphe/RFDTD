@@ -320,10 +320,116 @@ void DOMAIN::apply_source(int it){
 	for(i=indx1[0]; i<=indx2[0]; i++){
 	for(j=indx1[1]; j<=indx2[1]; j++){
 	for(k=indx1[2]; k<=indx2[2]; k++){
-		fld.S3[i][j][k]=amp;
+		fld.S3[i][j][k+1]=amp;
 	}
 	}
 	}
+};
+
+void DOMAIN::write_xslice(int it,double xout){
+	static int nout=0;
+	char fname[128];
+	sprintf(fname,"v%dx.out",nout);
+	FILE *fp=fopen(fname,"w");
+
+	double v1,v2,v3;
+	int i,j,k;
+	i=int((xout-Xa[0])/dh);
+
+	while(i<0) i+=Ndiv[0];
+	while(i>=Ndiv[0]) i-=Ndiv[0];
+	xout=(i+0.5)*dh+Xa[0];
+
+	fprintf(fp,"# time\n");
+	fprintf(fp,"%lf\n",it*dt);
+	fprintf(fp,"# Xa[0:3]\n");
+	fprintf(fp,"%lf, %lf, %lf\n",xout,Xa[1],Xa[2]);
+	fprintf(fp,"# Xb[0:3]\n");
+	fprintf(fp,"%lf, %lf, %lf\n",xout,Xb[1],Xb[2]);
+	fprintf(fp,"# Ndiv[0:3]\n");
+	fprintf(fp,"%d, %d, %d\n",1,Ndiv[1],Ndiv[2]);
+	fprintf(fp,"# v1, v2, v3 \n");
+
+	for(j=0;j<Ndiv[1];j++){
+	for(k=0;k<Ndiv[2];k++){
+		v1=fld.V1[i][j][k];
+		v2=fld.V2[i][j][k];
+		v3=fld.V3[i][j][k];
+		fprintf(fp,"%lf, %lf, %lf\n",v1,v2,v3);
+	}
+	}
+	fclose(fp);
+	nout++;
+};
+void DOMAIN::write_zslice(int it,double zout){
+	static int nout=0;
+	char fname[128];
+	sprintf(fname,"v%dz.out",nout);
+	FILE *fp=fopen(fname,"w");
+
+	double v1,v2,v3;
+	int i,j,k;
+	k=int((zout-Xa[2])/dh);
+
+	while(k<0) k+=Ndiv[2];
+	while(k>=Ndiv[2]) k-=Ndiv[2];
+	zout=(k+0.5)*dh+Xa[2];
+
+	fprintf(fp,"# time\n");
+	fprintf(fp,"%lf\n",it*dt);
+	fprintf(fp,"# Xa[0:3]\n");
+	fprintf(fp,"%lf, %lf, %lf\n",Xa[0],Xa[1],zout);
+	fprintf(fp,"# Xb[0:3]\n");
+	fprintf(fp,"%lf, %lf, %lf\n",Xb[0],Xb[1],zout);
+	fprintf(fp,"# Ndiv[0:3]\n");
+	fprintf(fp,"%d, %d, %d\n",Ndiv[0],Ndiv[1],1);
+	fprintf(fp,"# v1, v2, v3 \n");
+
+	for(i=0;i<Ndiv[0];i++){
+	for(j=0;j<Ndiv[1];j++){
+		v1=fld.V1[i][j][k];
+		v2=fld.V2[i][j][k];
+		v3=fld.V3[i][j][k];
+		fprintf(fp,"%lf, %lf, %lf\n",v1,v2,v3);
+	}
+	}
+	fclose(fp);
+	nout++;
+};
+void DOMAIN::write_yslice(int it,double yout){
+	static int nout=0;
+	char fname[128];
+	sprintf(fname,"v%dz.out",nout);
+	FILE *fp=fopen(fname,"w");
+
+	double v1,v2,v3;
+	int i,j,k;
+	j=int((yout-Xa[1])/dh);
+
+	while(j<0) j+=Ndiv[1];
+	while(j>=Ndiv[1]) j-=Ndiv[1];
+	yout=(j+0.5)*dh+Xa[1];
+
+	fprintf(fp,"# time\n");
+	fprintf(fp,"%lf\n",it*dt);
+	fprintf(fp,"# Xa[0:3]\n");
+	fprintf(fp,"%lf, %lf, %lf\n",Xa[0],yout,Xa[2]);
+	fprintf(fp,"# Xb[0:3]\n");
+	fprintf(fp,"%lf, %lf, %lf\n",Xb[1],yout,Xb[2]);
+	fprintf(fp,"# Ndiv[0:3]\n");
+	fprintf(fp,"%d, %d, %d\n",Ndiv[0],Ndiv[1],1);
+	fprintf(fp,"# v1, v2, v3 \n");
+
+	for(i=0;i<Ndiv[0];i++){
+	for(k=0;k<Ndiv[2];k++){
+		v1=fld.V1[i][j][k];
+		v2=fld.V2[i][j][k];
+		v3=fld.V3[i][j][k];
+		fprintf(fp,"%lf, %lf, %lf\n",v1,v2,v3);
+	}
+	}
+	fclose(fp);
+	nout++;
 };
 
 void DOMAIN::write_v(char *fname, int it){
