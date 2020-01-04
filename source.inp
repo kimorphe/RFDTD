@@ -1,9 +1,9 @@
 # T0: fundamental period [micro sec]
- 1.0
+ 0.5
 # time range Td ( [0,Td] )
- 10.0
+ 5.0
 # n_T ( sampling points / period T0)
- 32
+ 60
 # souce area xs1[3], xs2[3]
  9.95 14.95 10.0
 10.05 15.05 10.0

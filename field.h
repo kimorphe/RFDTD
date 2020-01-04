@@ -37,7 +37,7 @@ class DOMAIN{
 
 		void cod2indx(double *xcod, int *indx, int type);
 		void apply_source(int it);
-		void write_v(char *fname);
+		void write_v(char *fname,int i);
 	private:
 };
 

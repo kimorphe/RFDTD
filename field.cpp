@@ -225,7 +225,7 @@ void DOMAIN::set_src(char *fname){
 	CFL=cij.cL*dt*sqrt(ndim)/dh;
 	printf("CFL=%lf\n",CFL);
 	printf("dt=%lf, dh=%lf\n",dt,dh);
-	printf("n_lmb=%d, n_T=%d\n",src.n_T,n_lmb);
+	printf("n_T=%d, n_lmb=%d\n",src.n_T,n_lmb);
 
 	src.set_wvfm();
 
@@ -326,11 +326,13 @@ void DOMAIN::apply_source(int it){
 	}
 };
 
-void DOMAIN::write_v(char *fname){
+void DOMAIN::write_v(char *fname, int it){
 	FILE *fp=fopen(fname,"w");
 	int i,j,k;
 	k=Ndiv[2]-1;
 	double v1,v2,v3;
+	fprintf(fp,"# time\n");
+	fprintf(fp,"%lf\n",it*dt);
 	fprintf(fp,"# Xa[0:3]\n");
 	fprintf(fp,"%lf, %lf, %lf\n",Xa[0],Xa[1],Xa[2]);
 	fprintf(fp,"# Xb[0:3]\n");
@@ -338,8 +340,19 @@ void DOMAIN::write_v(char *fname){
 	fprintf(fp,"# Ndiv[0:3]\n");
 	fprintf(fp,"%d, %d, %d\n",Ndiv[0],Ndiv[1],Ndiv[2]);
 	fprintf(fp,"# v1, v2, v3 \n");
+	/*
 	for(i=0;i<Ndiv[0];i++){
 	for(j=0;j<Ndiv[1];j++){
+		v1=fld.V1[i][j][k];
+		v2=fld.V2[i][j][k];
+		v3=fld.V3[i][j][k];
+		fprintf(fp,"%lf, %lf, %lf\n",v1,v2,v3);
+	}
+	}
+	*/
+	j=Ndiv[1]/2;
+	for(i=0;i<Ndiv[0];i++){
+	for(k=0;k<Ndiv[2];k++){
 		v1=fld.V1[i][j][k];
 		v2=fld.V2[i][j][k];
 		v3=fld.V3[i][j][k];
