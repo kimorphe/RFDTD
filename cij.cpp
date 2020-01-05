@@ -51,6 +51,7 @@ void STIFF::fload(char *fname){
 
 		cij[0][1]=lmb; cij[1][0]=lmb;
 		cij[0][2]=lmb; cij[2][0]=lmb;
+		cij[1][2]=lmb; cij[2][1]=lmb;
 		
 	}else{
 		printf("Thie version cannot read anisotropic stiffness tensor components\n");

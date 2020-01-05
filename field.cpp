@@ -298,9 +298,9 @@ void DOMAIN::cod2indx(
 		indx[1]=floor((xcod[1]-Xa[1])/dh);
 		indx[2]=floor((xcod[2]-Xa[2])/dh);
 	}else if(type==1){
-		indx[0]=floor((xcod[0]-Xa[0])/dh-0.5);
-		indx[1]=floor((xcod[1]-Xa[1])/dh-0.5);
-		indx[2]=floor((xcod[2]-Xa[2])/dh-0.5);
+		indx[0]=floor((xcod[0]-Xa[0])/dh+0.5);
+		indx[1]=floor((xcod[1]-Xa[1])/dh+0.5);
+		indx[2]=floor((xcod[2]-Xa[2])/dh+0.5);
 	}else{
 		puts("Invalid grid type specified in cod2indx");
 		exit(-1);
@@ -320,7 +320,7 @@ void DOMAIN::apply_source(int it){
 	for(i=indx1[0]; i<=indx2[0]; i++){
 	for(j=indx1[1]; j<=indx2[1]; j++){
 	for(k=indx1[2]; k<=indx2[2]; k++){
-		fld.S3[i][j][k+1]=amp;
+		fld.S3[i][j][k]=amp;
 	}
 	}
 	}
@@ -399,7 +399,7 @@ void DOMAIN::write_zslice(int it,double zout){
 void DOMAIN::write_yslice(int it,double yout){
 	static int nout=0;
 	char fname[128];
-	sprintf(fname,"v%dz.out",nout);
+	sprintf(fname,"v%dy.out",nout);
 	FILE *fp=fopen(fname,"w");
 
 	double v1,v2,v3;
@@ -417,7 +417,7 @@ void DOMAIN::write_yslice(int it,double yout){
 	fprintf(fp,"# Xb[0:3]\n");
 	fprintf(fp,"%lf, %lf, %lf\n",Xb[1],yout,Xb[2]);
 	fprintf(fp,"# Ndiv[0:3]\n");
-	fprintf(fp,"%d, %d, %d\n",Ndiv[0],Ndiv[1],1);
+	fprintf(fp,"%d, %d, %d\n",Ndiv[0],1,Ndiv[2]);
 	fprintf(fp,"# v1, v2, v3 \n");
 
 	for(i=0;i<Ndiv[0];i++){

@@ -32,7 +32,7 @@ class IMG:
         fp.close();
 
         K=np.sqrt(np.array(K))
-        K=np.transpose(np.reshape(K,[Ndiv[0],Ndiv[1]]))
+        K=np.transpose(np.reshape(K,[Ndiv[0],Ndiv[2]]))
 
         self.Xa=Xa;
         self.Xb=Xb;
@@ -43,7 +43,7 @@ class IMG:
     def show(self,ax):
         Xa=self.Xa;
         Xb=self.Xb;
-        im=ax.imshow(self.K,origin="lower",extent=[Xa[0],Xb[0],Xa[1],Xb[1]],interpolation="bilinear",cmap="jet",vmin=0.0,vmax=0.005);
+        im=ax.imshow(self.K,origin="lower",extent=[Xa[0],Xb[0],Xa[2],Xb[2]],interpolation="bilinear",cmap="jet",vmin=0.0,vmax=0.005);
         if self.nshow==0:
             plt.colorbar(im);
         ax.set_aspect(1.0)
@@ -57,7 +57,7 @@ if __name__=="__main__":
     vdat=IMG()
     nums=np.arange(1,30,1)
     for k in nums:
-        fname="v"+str(k)+"z.out";
+        fname="v"+str(k)+"y.out";
         vdat.load(fname)
         vdat.show(ax)
         fout=fname.replace(".out",".png")
