@@ -28,10 +28,11 @@ class IMG:
         for row in fp:
             dat=row.lstrip().split(",");
             dat=list(map(float,dat))
-            K.append(dat[0]*dat[0]+dat[1]*dat[1]+dat[2]*dat[2]);
+            #K.append(dat[0]*dat[0]+dat[1]*dat[1]+dat[2]*dat[2]);
+            K.append(dat[2]);
         fp.close();
 
-        K=np.sqrt(np.array(K))
+        #K=np.sqrt(np.array(K))
         K=np.transpose(np.reshape(K,[Ndiv[0],Ndiv[1]]))
 
         self.Xa=Xa;
@@ -43,7 +44,7 @@ class IMG:
     def show(self,ax):
         Xa=self.Xa;
         Xb=self.Xb;
-        im=ax.imshow(self.K,origin="lower",extent=[Xa[0],Xb[0],Xa[1],Xb[1]],interpolation="bilinear",cmap="jet",vmin=0.0,vmax=0.004);
+        im=ax.imshow(self.K,origin="lower",extent=[Xa[0],Xb[0],Xa[1],Xb[1]],interpolation="bilinear",cmap="jet",vmin=-0.003,vmax=0.003);
         if self.nshow==0:
             plt.colorbar(im);
         ax.set_aspect(1.0)
@@ -55,8 +56,7 @@ if __name__=="__main__":
     ax=fig.add_subplot(111)
 
     vdat=IMG()
-    nums=np.arange(0,161,10)
-    nums=np.arange(0,45,2)
+    nums=np.arange(0,169,5)
     for k in nums:
         fname="v"+str(k)+"z.out";
         vdat.load(fname)
