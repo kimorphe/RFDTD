@@ -215,8 +215,8 @@ void DOMAIN::set_src(char *fname){
 	src.load_prms(fname);
 
 	int ndim=3;
-	int n_T=ceil( cij.cL/cij.cT*n_lmb*sqrt(ndim));
-	if(n_T>src.n_T) src.n_T=n_T;
+	int n_T=1.5*ceil( cij.cL/cij.cT*n_lmb*sqrt(ndim));
+	if( n_T > src.n_T) src.n_T=n_T;
 
 	double CFL;
 
@@ -415,7 +415,7 @@ void DOMAIN::write_yslice(int it,double yout){
 	fprintf(fp,"# Xa[0:3]\n");
 	fprintf(fp,"%lf, %lf, %lf\n",Xa[0],yout,Xa[2]);
 	fprintf(fp,"# Xb[0:3]\n");
-	fprintf(fp,"%lf, %lf, %lf\n",Xb[1],yout,Xb[2]);
+	fprintf(fp,"%lf, %lf, %lf\n",Xb[0],yout,Xb[2]);
 	fprintf(fp,"# Ndiv[0:3]\n");
 	fprintf(fp,"%d, %d, %d\n",Ndiv[0],1,Ndiv[2]);
 	fprintf(fp,"# v1, v2, v3 \n");

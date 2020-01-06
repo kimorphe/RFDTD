@@ -30,7 +30,7 @@ void InWv::set_Nt(int N){	// empty constructor
 	T0=0.1;	// fundamental period
 	if(N>1) dt=(t2-t1)/(N-1);
 	wvtyp=1; 	// 1:sine, 2: cosine
-	nbrst=3;	// burst cycles
+	nbrst=4;	// burst cycles
 	Nt=N;
 	mem_alloc();	
 }

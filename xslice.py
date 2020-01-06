@@ -43,7 +43,7 @@ class IMG:
     def show(self,ax):
         Xa=self.Xa;
         Xb=self.Xb;
-        im=ax.imshow(self.K,origin="lower",extent=[Xa[1],Xb[1],Xa[2],Xb[2]],interpolation="bilinear",cmap="jet",vmin=0.0,vmax=0.005);
+        im=ax.imshow(self.K,origin="lower",extent=[Xa[1],Xb[1],Xa[2],Xb[2]],interpolation="bilinear",cmap="jet",vmin=0.0,vmax=0.002);
         if self.nshow==0:
             plt.colorbar(im);
         ax.set_aspect(1.0)
@@ -55,7 +55,7 @@ if __name__=="__main__":
     ax=fig.add_subplot(111)
 
     vdat=IMG()
-    nums=np.arange(1,30,1)
+    nums=np.arange(0,161,10)
     for k in nums:
         fname="v"+str(k)+"x.out";
         vdat.load(fname)

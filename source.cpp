@@ -33,9 +33,13 @@ void SRC::set_wvfm(){
 	wv.set_taxis(0.0,Td);	// [t1,t2]
 	wv.T0=T0;		// T0 (period)
 	wv.gen_wvfm();		// generate waveform
-	wv.Amod(T0*0.5,4);		// amlitude modlulation
+	wv.Amod(2.*T0,4);		// amlitude modlulation
 	char tmp[]="wvfm0.out";
 	wv.out(tmp);	
+
+	wv.DFT();
+	sprintf(tmp,"wvfft.out");
+	wv.DFTout(tmp);
 	for(int i=0;i<6;i++) stype[i]=0;
 	stype[2]=1;
 };

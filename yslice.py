@@ -55,7 +55,7 @@ if __name__=="__main__":
     ax=fig.add_subplot(111)
 
     vdat=IMG()
-    nums=np.arange(1,30,1)
+    nums=np.arange(0,71,5)
     for k in nums:
         fname="v"+str(k)+"y.out";
         vdat.load(fname)
