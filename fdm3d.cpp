@@ -36,6 +36,7 @@ int main(int argv, char *argc[]){
 			dom.write_xslice(i,xout); // v***x.out
 			dom.write_yslice(i,yout); // v***y.out
 			dom.write_zslice(i,zout); // v***z.out
+			dom.zslice_vtk(i,zout); // v***z.out
 			num++;
 		}
 	};

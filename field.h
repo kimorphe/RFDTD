@@ -41,6 +41,7 @@ class DOMAIN{
 		void write_xslice(int it, double xout);
 		void write_yslice(int it, double yout);
 		void write_zslice(int it, double zout);
+		void zslice_vtk(int it, double zout);
 	private:
 };
 

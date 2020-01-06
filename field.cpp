@@ -396,6 +396,59 @@ void DOMAIN::write_zslice(int it,double zout){
 	fclose(fp);
 	nout++;
 };
+void DOMAIN::zslice_vtk(int it,double zout){
+	static int nout=0;
+	char fname[128];
+	sprintf(fname,"v%dz.vtk",nout);
+	FILE *fp=fopen(fname,"w");
+
+	double v1,v2,v3;
+	int i,j,k;
+	k=int((zout-Xa[2])/dh);
+
+	while(k<0) k+=Ndiv[2];
+	while(k>=Ndiv[2]) k-=Ndiv[2];
+	zout=(k+0.5)*dh+Xa[2];
+/*
+	fprintf(fp,"# time\n");
+	fprintf(fp,"%lf\n",it*dt);
+	fprintf(fp,"# Xa[0:3]\n");
+	fprintf(fp,"%lf, %lf, %lf\n",Xa[0],Xa[1],zout);
+	fprintf(fp,"# Xb[0:3]\n");
+	fprintf(fp,"%lf, %lf, %lf\n",Xb[0],Xb[1],zout);
+	fprintf(fp,"# Ndiv[0:3]\n");
+	fprintf(fp,"%d, %d, %d\n",Ndiv[0],Ndiv[1],1);
+	fprintf(fp,"# v1, v2, v3 \n");
+*/
+	fprintf(fp,"# vtk DataFile Version 3.0\n");
+	fprintf(fp,"time=%lf\n",it*dt);
+	fprintf(fp,"ASCII\n");
+	fprintf(fp,"DATASET STRUCTURED_GRID\n");
+	fprintf(fp,"DIMENSIONS %d %d %d\n",Ndiv[0],Ndiv[1],1);
+	fprintf(fp,"POINTS %d float\n",Ndiv[0]*Ndiv[1]);
+	double xx,yy;
+	for(i=0;i<Ndiv[0];i++){
+		xx=Xa[0]+dh*(i+0.5);
+	for(j=0;j<Ndiv[1];j++){
+		yy=Xa[1]+dh*(j+0.5);
+		fprintf(fp," %lf %lf %lf\n",xx,yy,0.0);	
+	}
+	}
+
+	fprintf(fp,"POINT_DATA %d\n",Ndiv[0]*Ndiv[1]);
+	fprintf(fp,"SCALARS temp float\n");
+	fprintf(fp,"LOOKUP_TABLE default\n");
+	for(i=0;i<Ndiv[0];i++){
+	for(j=0;j<Ndiv[1];j++){
+		v1=fld.V1[i][j][k];
+		v2=fld.V2[i][j][k];
+		v3=fld.V3[i][j][k];
+		//fprintf(fp,"%lf, %lf, %lf\n",v1,v2,v3);
+		fprintf(fp,"%lf\n",v3);
+	}
+	}
+	fclose(fp);
+};
 void DOMAIN::write_yslice(int it,double yout){
 	static int nout=0;
 	char fname[128];
