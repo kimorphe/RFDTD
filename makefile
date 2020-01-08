@@ -1,5 +1,5 @@
-fdm3d:	fdm3d.o cij.o field.o wvfm.o source.o
-	g++ -o fdm3d fdm3d.o cij.o field.o wvfm.o source.o
+fdm3d:	fdm3d.o cij.o field.o wvfm.o source.o recs.o
+	g++ -o fdm3d fdm3d.o cij.o field.o wvfm.o source.o recs.o
 
 fdm3d.o: fdm3d.cpp 
 	g++ -c fdm3d.cpp
@@ -13,3 +13,5 @@ wvfm.o: wvfm.cpp wvfm.h
 
 source.o: source.cpp source.h
 	g++ -c source.cpp
+recs.o: recs.cpp recs.h
+	g++ -c resc.cpp

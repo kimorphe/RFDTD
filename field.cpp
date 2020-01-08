@@ -203,6 +203,10 @@ void DOMAIN::set_size(char *fname){
 	printf("Xb=%lf %lf %lf\n",Xb[0],Xb[1],Xb[2]);
 	printf("nlmb=%d\n",n_lmb);
 	fclose(fp);
+
+	rc.xcod[0]=10.0;
+	rc.xcod[1]=15.0;
+	rc.xcod[2]= 5.0;
 };
 void DOMAIN::set_cij(char *fname){
 	src.load_prms(fname);
@@ -228,6 +232,7 @@ void DOMAIN::set_src(char *fname){
 	printf("n_T=%d, n_lmb=%d\n",src.n_T,n_lmb);
 
 	src.set_wvfm();
+
 
 };
 
@@ -286,6 +291,14 @@ void DOMAIN::setup(
 	printf("indx1=%d %d %d\n",indx1[0],indx1[1],indx1[2]);
 	printf("indx2=%d %d %d\n",indx2[0],indx2[1],indx2[2]);
 	printf("nsg=%d\n",nsg);
+	rc.set_indx(Xa,dh);
+	rc.mem_alloc(Nt);
+/*
+	printf("Receiver location=%lf %lf %lf\n",rc.xcod[0],rc.xcod[1],rc.xcod[2]);
+	printf("Receiver index =%d %d %d\n",rc.indx[0],rc.indx[1],rc.indx[2]);
+	printf("Nt(in RECS)=%d\n",rc.Nt);
+	exit(-1);
+*/
 		
 };
 void DOMAIN::cod2indx(
@@ -293,11 +306,11 @@ void DOMAIN::cod2indx(
 	int *indx,	// index (i,j)
 	int type	// 0:stress, 1: velocity
 ){
-	if(type==0){
+	if(type==0){	//stress grid
 		indx[0]=floor((xcod[0]-Xa[0])/dh);
 		indx[1]=floor((xcod[1]-Xa[1])/dh);
 		indx[2]=floor((xcod[2]-Xa[2])/dh);
-	}else if(type==1){
+	}else if(type==1){	// velocity grid
 		indx[0]=floor((xcod[0]-Xa[0])/dh+0.5);
 		indx[1]=floor((xcod[1]-Xa[1])/dh+0.5);
 		indx[2]=floor((xcod[2]-Xa[2])/dh+0.5);
@@ -424,7 +437,8 @@ void DOMAIN::zslice_vtk(int it,double zout){
 	fprintf(fp,"time=%lf\n",it*dt);
 	fprintf(fp,"ASCII\n");
 	fprintf(fp,"DATASET STRUCTURED_GRID\n");
-	fprintf(fp,"DIMENSIONS %d %d %d\n",Ndiv[0],Ndiv[1],1);
+	//fprintf(fp,"DIMENSIONS %d %d %d\n",Ndiv[0],Ndiv[1],1);
+	fprintf(fp,"DIMENSIONS %d %d %d\n",Ndiv[1],Ndiv[0],1);
 	fprintf(fp,"POINTS %d float\n",Ndiv[0]*Ndiv[1]);
 	double xx,yy;
 	for(i=0;i<Ndiv[0];i++){
@@ -444,10 +458,11 @@ void DOMAIN::zslice_vtk(int it,double zout){
 		v2=fld.V2[i][j][k];
 		v3=fld.V3[i][j][k];
 		//fprintf(fp,"%lf, %lf, %lf\n",v1,v2,v3);
-		fprintf(fp,"%lf\n",v3);
+		fprintf(fp," %lf\n",v3);
 	}
 	}
 	fclose(fp);
+	nout++;
 };
 void DOMAIN::write_yslice(int it,double yout){
 	static int nout=0;

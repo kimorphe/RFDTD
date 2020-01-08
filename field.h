@@ -1,5 +1,6 @@
 //#include"wvfm.h"
 #include"source.h"
+#include"recs.h"
 double Courant(double dt, double vel, double ds);
 class Field{
 	public:
@@ -42,6 +43,8 @@ class DOMAIN{
 		void write_yslice(int it, double yout);
 		void write_zslice(int it, double zout);
 		void zslice_vtk(int it, double zout);
+
+		REC rc;
 	private:
 };
 
